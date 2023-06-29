@@ -1,4 +1,4 @@
-use sea_orm_migration::{prelude::*, sea_orm::EnumIter};
+use sea_orm_migration::{prelude::*, sea_orm::EnumIter, sea_query::extension::postgres::Type};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -7,6 +7,15 @@ pub struct Migration;
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         // Replace the sample below with your own migration scripts
+        manager
+            .create_type(
+                Type::create()
+                    .as_enum(User::Role)
+                    .values([Role::Admin, Role::User])
+                    .to_owned(),
+            )
+            .await?;
+
         manager
             .create_table(
                 Table::create()
@@ -49,6 +58,8 @@ enum User {
 #[derive(Iden, EnumIter)]
 enum Role {
     Table,
+    #[iden = "Admin"]
     Admin,
+    #[iden = "User"]
     User,
 }
