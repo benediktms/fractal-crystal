@@ -1,2 +1,2 @@
 [workspace]
-members = ['packages/api']
+members = ['packages/api', 'packages/migration', 'packages/entity']

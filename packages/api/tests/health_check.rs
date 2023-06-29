@@ -1,10 +1,11 @@
 use std::net::TcpListener;
 
-use api::run;
+use api::startup::run;
+use sea_orm_migration::sea_orm::Database;
 
 #[tokio::test]
 async fn health_check_works() {
-    let address = spawn_app();
+    let address = spawn_app().await;
     let client = reqwest::Client::new();
 
     let response = client
@@ -17,10 +18,16 @@ async fn health_check_works() {
     assert_eq!(Some(0), response.content_length());
 }
 
-fn spawn_app() -> String {
+async fn spawn_app() -> String {
     let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind to random port");
     let port = listener.local_addr().unwrap().port();
-    let server = run(listener).expect("Failed to bind address");
+
+    let connection =
+        Database::connect("postgres://postgres:password@localhost:5434/fractal-crystal-test")
+            .await
+            .expect("Failed to connect to database");
+
+    let server = run(listener, connection).expect("Failed to bind address");
 
     tokio::spawn(async move {
         if let Err(e) = server.await {
