@@ -7,6 +7,7 @@ use crate::startup::AppState;
 #[get("/health_check")]
 pub async fn health_check(data: web::Data<AppState>) -> impl Responder {
     let db = &data.conn;
+
     let user = User::insert(ActiveModel {
         email: ActiveValue::Set("john.doe@example.com".to_owned()),
         role: ActiveValue::Set(Role::User),
