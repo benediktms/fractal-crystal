@@ -18,9 +18,12 @@ pub struct DatabaseSettings {
 }
 
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {
+    let manifest_dir = std::env::var("CARGO_MANIFEST_DIR").unwrap();
+    let config_file_path = format!("{}/configuration.yaml", manifest_dir);
+
     let settings = config::Config::builder()
         .add_source(config::File::new(
-            "packages/api/configuration.yaml",
+            config_file_path.as_str(),
             config::FileFormat::Yaml,
         ))
         .build()?;
@@ -33,6 +36,13 @@ impl DatabaseSettings {
         format!(
             "postgres://{}:{}@{}:{}/{}",
             self.username, self.password, self.host, self.port, self.db_name
+        )
+    }
+
+    pub fn connection_string_without_db(&self) -> String {
+        format!(
+            "postgres://{}:{}@{}:{}",
+            self.username, self.password, self.host, self.port
         )
     }
 }

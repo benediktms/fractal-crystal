@@ -1,10 +1,17 @@
 use std::{net::TcpListener, time::Duration};
 
-use api::{configuration::get_configuration, startup::run};
+use api::{
+    configuration::get_configuration,
+    startup::run,
+    telemetry::{get_subscriber, init_subscriber},
+};
 use sea_orm_migration::sea_orm::{ConnectOptions, Database};
 
 #[actix_web::main]
 async fn main() -> Result<(), std::io::Error> {
+    let subscriber = get_subscriber("api".into(), "info".into());
+    init_subscriber(subscriber);
+
     let configuration = get_configuration().expect("Failed to read configuration.");
 
     let address = format!("127.0.0.1:{}", configuration.application_port);
