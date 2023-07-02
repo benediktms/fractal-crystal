@@ -18,7 +18,7 @@ test-all:
 
 # run a specific cargo binary
 run BIN:
-    cargo run --bin {{BIN}}
+    cargo run --bin {{BIN}} | bunyan
 
 migration-generate NAME:
     sea-orm-cli migrate generate {{NAME}} \

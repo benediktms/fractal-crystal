@@ -2,7 +2,7 @@ use actix_web::{dev::Server, middleware::Logger, web, App, HttpServer};
 use sea_orm_migration::sea_orm::DatabaseConnection;
 use std::net::TcpListener;
 
-use crate::routes::{health_check, sign_up};
+use crate::routes::{health_check, signup};
 
 #[derive(Clone, Debug)]
 pub struct AppState {
@@ -15,7 +15,7 @@ pub fn run(listener: TcpListener, conn: DatabaseConnection) -> Result<Server, st
         App::new()
             .wrap(Logger::default())
             .service(health_check)
-            .service(sign_up)
+            .service(signup)
             .app_data(state.clone())
     })
     .listen(listener)?

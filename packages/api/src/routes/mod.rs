@@ -1,5 +1,5 @@
 mod health_check;
-mod sign_up;
+mod signup;
 
 pub use health_check::*;
-pub use sign_up::*;
+pub use signup::*;
