@@ -10,12 +10,14 @@ use sea_orm_migration::{
     MigratorTrait,
 };
 
+#[allow(dead_code)]
 pub struct TestApp {
     pub address: String,
     pub api_client: reqwest::Client,
     conn: DatabaseConnection,
 }
 
+#[allow(dead_code)]
 impl TestApp {
     pub async fn post<Body>(&self, path: &str, body: &Body) -> reqwest::Response
     where
@@ -23,10 +25,11 @@ impl TestApp {
     {
         self.api_client
             .post(&format!("{}/{}", &self.address, path))
-            .form(&body)
+            .json(body)
+            .header("Content-Type", "application/json")
             .send()
             .await
-            .expect("Failed to execute reequest")
+            .expect("Failed to execute request")
     }
 }
 
